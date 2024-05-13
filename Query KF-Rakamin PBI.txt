@@ -1,0 +1,77 @@
+-- Tabel Analisa
+-- Membuat join table transaksi dan table kantor cabang
+
+SELECT a.transaction_id, a.date, a.branch_id, b.branch_name, b.kota, b.provinsi
+FROM `kimia_farma.kf_final_transaction ` a
+LEFT JOIN `kimia_farma.kf_kantor_cabang` b
+ON a.branch_id = b.branch_id;
+
+
+--Challenge
+--1. rating cabang 
+
+--1.1 rating seluruh cabang
+
+SELECT AVG(rating) as rating_cabang
+FROM `kimia_farma.kf_kantor_cabang`;
+
+--1.2 rating tiap cabang
+
+SELECT branch_id,AVG(rating) as rating_cabang
+FROM `kimia_farma.kf_kantor_cabang`
+GROUP BY branch_id;
+
+--2. customer_name
+
+SELECT DISTINCT customer_name
+FROM `kimia_farma.kf_final_transaction `;
+
+--3. product_id
+
+SELECT DISTINCT product_id
+FROM `kimia_farma.kf_product`;
+
+
+--4. product_name
+
+SELECT DISTINCT product_name
+FROM `kimia_farma.kf_product`;
+
+--5. actual_price
+
+SELECT DISTINCT product_name, price as actual_price
+FROM `kimia_farma.kf_product`;
+
+--6. discount_percentage
+
+SELECT transaction_id, product_id, discount_percentage
+FROM `kimia_farma.kf_final_transaction `;
+
+
+--7. persentase_gross_laba
+SELECT DISTINCT product_id, case when price <=50000 then 10
+when price <100000 then 15
+when price <300000 then 20
+when price <500000 then 25
+else 30 end persentase_gross_laba
+FROM `kimia_farma.kf_final_transaction `;
+
+--8. nett sales
+
+SELECT *, (price-(price*discount_percentage)) as nett_sales
+FROM `kimia_farma.kf_final_transaction `;
+
+--9. nett_profit
+
+WITH net_sales AS (
+
+SELECT *, (price-(price*discount_percentage)) as nett_sales
+FROM `kimia_farma.kf_final_transaction ` )
+
+SELECT SUM(nett_sales) as nett_profit
+FROM net_sales;
+
+--10. rating_transaksi
+SELECT AVG(rating)
+FROM `kimia_farma.kf_final_transaction `;
+
